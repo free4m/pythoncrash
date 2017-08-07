@@ -1,14 +1,13 @@
 #!/usr/bin/python
 
 import operator
-from string import maketrans
 
 def get_count(word_counts):
   return word_counts[1]
 
 def checkio(text):
     word_count = {}
-    text = text.translate(str.maketrans('','',"!?.,'123456789"))
+    text = text.translate(str.maketrans('','',"!?.,-'1234567890"))
     text = text.replace(" ","")
     words = list(text.lower())
     for word in words:
@@ -17,8 +16,9 @@ def checkio(text):
         else:
             word_count[word] = word_count[word] + 1
             
-    top_word = sorted(word_count.items(), key=operator.itemgetter(0), reverse=True)
-    print(top_word)
+    # vertex: (degree(vertex), vertex))
+    top_word = sorted(word_count.items(), key=lambda x: (-x[1], x[0]))
+    #print(top_word)
     
     for i in top_word[:1]:
         return(i[0])
