@@ -3,17 +3,8 @@
 import re
 
 def checkio(data):
-    if len(data) <= 10:
-        if re.match("[a-z]+", data):
-            if re.match("[A-Z]+", data):
-                if re.match("[0-9]+", data):
-                    return True
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
+    if len(data) >= 10 and re.search("[a-z]+", data) and re.search("[A-Z]+", data) and re.search("[0-9]+", data): 
+        return True
     else:
         return False
 
