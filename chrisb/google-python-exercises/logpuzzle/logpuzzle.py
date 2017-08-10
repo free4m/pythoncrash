@@ -19,12 +19,32 @@ Here's what a puzzle url looks like:
 """
 
 
-def read_urls(filename):
+def read_urls(log):
   """Returns a list of the puzzle urls from the given log file,
   extracting the hostname from the filename itself.
   Screens out duplicate urls and returns the urls sorted into
   increasing order."""
   # +++your code here+++
+
+  ufile = urllib.urlopen(log)
+  ufiletext = ufile.read()
+  #print ufiletext
+
+  url = re.findall(r'GET\s([\S]+)\.jpg\s',ufiletext)
+  #print url
+
+  url_list = []
+  for u in url:
+    if not u in url_list:
+      url_list.append('http://code.google.com' + u + '.jpg')
+
+  url_list_duped = []
+
+  for d in url_list:
+    if not d in url_list_duped:
+      url_list_duped.append(d)
+
+  return sorted(url_list_duped)
   
 
 def download_images(img_urls, dest_dir):
@@ -35,7 +55,40 @@ def download_images(img_urls, dest_dir):
   with an img tag to show each local image file.
   Creates the directory if necessary.
   """
-  # +++your code here+++
+  if not os.path.exists(dest_dir):
+    print "Directory does not exist; creating..."
+    os.makedirs(dest_dir)
+
+  i = 0
+  for u in img_urls:
+    print("Retrieving..." + u)
+    urllib.urlretrieve(u, os.path.join(dest_dir, str(i) + '.jpg'))
+    i += 1
+
+  f = open(os.path.join(dest_dir,'index.html'), 'w')
+  index_head = '<verbatim> <html> <body>'
+  index_foot = '</body></html>'
+  f.write(index_head)
+
+  image_paths = os.listdir(dest_dir)
+  #print sorted(image_paths)
+  #sys.exit(0)
+  n = 0
+  for image_url in img_urls:
+    local_name = 'img%d.jpg' % n
+    f.write('<img src="' + os.path.abspath(os.path.join(dest_dir,local_name) + '">'))
+    n += 1
+
+  #for image in sorted(image_paths):
+  #  i = re.search(r'(\d+)\.jpg',image)
+  #  if i:
+  #    f.write('<img src="'+ os.path.abspath(os.path.join(dest_dir,image[0])) + '.jpg">')
+
+  f.write(index_foot)
+  f.close()
+
+  #<img src="/edu/python/exercises/img0"><img src="/edu/python/exercises/img1"><img src="/edu/python/exercises/img2">...</body></html>'
+
   
 
 def main():
